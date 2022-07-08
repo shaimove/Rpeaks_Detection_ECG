@@ -1,7 +1,9 @@
 # R-peaks Detection ECG
 
 The following Repo is a project in a course in the of Bio medical engineering faculty at the Technion, Machine Learning for Physiological Time Series Analysis (336018).
+
 The project goal is to detect R-peaks in noisy ECG signal, and the frame for data generation was based on Laitala et all [1].
+
 The input and output of the model is 1D tensor with length of 1000, continous values for input and target vector is boolean (1 for peaks, 0 for background).
 
 After dataset creation, we compare multiple architectures:
@@ -21,9 +23,10 @@ For test set:
 3. 
 
 
+### Results
+The following examples show the signals; in Red the original noisy ECG signal, in Blue the taget signal (GT), in purple the output probability. 
 
-
-
+![image](https://user-images.githubusercontent.com/47494709/177945079-e2679d1d-6b59-4ad5-ae1b-d2c1001c3f16.png)
 
 
 ## Reference
