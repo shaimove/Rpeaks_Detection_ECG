@@ -15,12 +15,21 @@ After dataset creation, we compare multiple architectures:
  6. Encoding tranformers, with Res-Inception blocks as feature extraction stage.
 
 
-## Data Sources
+## Data Sources and Data creation
 The input is MIT-BIH database: 
 1. MIT-BIH Arrhythmia database, includes "clean" ECG signal [2]
 2. MIT-BIH Noise Stress database, includes only ECG "noise" [3]
 For test set:
 3. 
+
+## Peak Expanding
+
+
+## Loss Function
+
+
+## Peak Labeling
+
 
 
 ### Results
