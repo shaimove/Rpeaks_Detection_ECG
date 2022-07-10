@@ -45,10 +45,13 @@ The new loss function comprises weighted BCE with weights according to the data 
 
 
 ## Peak Labeling
+Since
+
+![image](https://user-images.githubusercontent.com/47494709/178142739-8b98f5d8-9b71-45d7-bf68-a5cc8117d7c9.png)
 
 
 
-### Results
+## Results
 The following examples show the signals; in Red the original noisy ECG signal, in Blue the taget signal (GT), in purple the output probability. 
 
 ![image](https://user-images.githubusercontent.com/47494709/177945079-e2679d1d-6b59-4ad5-ae1b-d2c1001c3f16.png)
