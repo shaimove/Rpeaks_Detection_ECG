@@ -59,6 +59,7 @@ class cnn_lstm_model(nn.Module):
         # Define N layers CNN
         cnn_modules = []
         in_channels = conv_input_dim
+        n_directions = 2
         
         for kernel,features in zip(conv_kernel,conv_feature):
             cnn_modules.append(nn.Conv1d(in_channels=in_channels, out_channels=features, kernel_size=kernel, padding='same'))
@@ -69,7 +70,7 @@ class cnn_lstm_model(nn.Module):
         self.cnn = nn.Sequential(*cnn_modules)
         
         # Define LSTM
-        self.lstm = nn.LSTM(input_size = sconv_feature[-1], hidden_size = hidden_size_lstm, num_layers = n_layers_lstm, 
+        self.lstm = nn.LSTM(input_size = conv_feature[-1], hidden_size = hidden_size_lstm, num_layers = n_layers_lstm, 
                           dropout = (0 if n_layers_lstm == 1 else dropout_p_lstm), batch_first=True,
                           bidirectional = bidirectional) 
         
@@ -324,6 +325,67 @@ class transformer_model(nn.Module):
         y_pred = torch.stack(out).T.permute(1,2,0)
         
         return y_pred
+
+# Forth Model: Simple Transformer
+class transformer_inception_model(nn.Module):
+
+    def __init__(self, input_dim=1, conv_kernel_res=[15,17,19,21], num_features=128, num_of_attention_heads=8,
+                 dim_feedforward=2048, num_of_encoder_leyrs=6, output_size=1, dropout_p=0.1, batch_first=True):
+        
+        # Inherit everything from the nn.Module
+        super().__init__()
+                
+        # CNN as feature extraction 
+        feature_per_res = int(num_features/4)
+        out_features = [feature_per_res, feature_per_res, feature_per_res, feature_per_res]
+        self.cnn = nn.Sequential(
+                                nn.Conv1d(input_dim, 16, kernel_size=3, padding='same'),
+                                nn.BatchNorm1d(num_features=16, affine=False),
+                                nn.LeakyReLU(0.2,),
+                                InceptionResBlock(16, kernels=conv_kernel_res, out_features=out_features, stride_size=1),
+                                nn.LeakyReLU(0.2,))
+        
+        # Positional Encoding
+        self.positional_encoder = PositionalEncoding(
+                                    dim_model=num_features, dropout_p=dropout_p, max_len=1000)
+        
+        # Define Transfomer
+        self.encoder_layer = nn.TransformerEncoderLayer(d_model = num_features,
+                                                        nhead = num_of_attention_heads,
+                                                        dim_feedforward = dim_feedforward,
+                                                        batch_first = batch_first)
+        self.encoder_transformer = nn.TransformerEncoder(encoder_layer = self.encoder_layer,
+                                                         num_layers = num_of_encoder_leyrs)
+        
+        # Define Linear 
+        self.linear = nn.Sequential(
+                        nn.Linear(num_features, output_size),
+                        nn.Sigmoid())
+
+    def forward(self, source):
+        # T=S source and target sequence length, N batch size, E number of features 
+        # source and target size is be (batch_size, sequence length)
+        seq_len = source.shape[1]
+        
+        # permute before CNN, from [batch, seq_len, 1] to [batch, 1, seq_len]
+        source = torch.permute(source, (0, 2, 1))
+        # feature extraction
+        source = self.cnn(source)
+        # permute after cnn, from [batch, 1, seq_len] to [batch, seq_len, 1]
+        source = torch.permute(source, (0, 2, 1))
+        
+        # positional encoding and get target mask
+        source = self.positional_encoder(source) # [batch, seq, features]
+        
+        # transformer
+        transformer_out = self.encoder_transformer(source) # [batch, seq, features]
+        
+        # linear and activation layer
+        out = [self.linear(transformer_out[:,i,:]) for i in range(seq_len)]
+        y_pred = torch.stack(out).T.permute(1,2,0)
+        
+        return y_pred
+    
     
 # Helper functions
 class ConvBlock(nn.Module):
