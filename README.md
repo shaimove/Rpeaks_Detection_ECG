@@ -65,7 +65,7 @@ Before creating the data loaders, we splited the patients into two differnet set
 
 ![validation](https://user-images.githubusercontent.com/47494709/183287686-27d9c634-7883-42a7-816d-e631f135ba4c.png)
 
-For the validation set, we can see that the Transformers architectures achieved the best results in terms of Recall and Specificity compared to LSTM and U-net architectures. Res-Inception blocks improved the performance for all architectures and changing the labeling of the peaks enhanced the performance.  
+For the validation set, we can see that the Transformers architectures achieved the best results in terms of Recall and Specificity compared to LSTM and U-net architectures. Res-Inception blocks improved the performance for all architectures and changing the labeling of the peaks enhanced the performance. In addition, all deep-learning methods are superior to the classical algorithm (G-QRS implemented in the wfdb library). 
 
 ## Results on Test databases
 In the testing set, we could use the MTI-BIH database and use information from a separate group of patients, but in order to test if our trained models can be generalized to "real-world" data, we choose to use external databases. The database contains a variety of different types of ECG signals: normal sinus rhythm (nsrdb), arrhythmia (svdb & incartdb), ST and T morphology changes (edb), and long-term measurements (nsrdb).
@@ -80,14 +80,15 @@ The following results were achieved in percentage for different models and diffe
 
 Recall:
 
-![Recall Test](https://user-images.githubusercontent.com/47494709/183284376-67af6f55-6aeb-447b-98b9-91f849a1cf36.png)
+![Recall Test](https://user-images.githubusercontent.com/47494709/183290116-3d66d109-26f3-417f-a797-098615a69ba5.png)
 
 Specificity:
 
-![Specificity test](https://user-images.githubusercontent.com/47494709/183284389-8eb584b4-08fa-4abd-8236-4a069a968e8a.png)
+![Specificity test](https://user-images.githubusercontent.com/47494709/183290120-24757cd1-60f5-4c83-b2dd-037d84a23f8f.png)
 
 ## Discussion
 
+In the test sets, we can see that the deep-learning methods outperform the classical methods (GQRS) methods. 
 
 ## Reference
 
