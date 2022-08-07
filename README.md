@@ -64,6 +64,9 @@ The following examples show the signals; in Red the original noisy ECG signal, i
 ## Results on Validation set
 Before creating the data loaders, we splited the patients into two differnet sets, one for training and one for validation. The following results were achieved:
 
+![validation](https://user-images.githubusercontent.com/47494709/183284617-1a245677-a1ee-4196-ade5-9ba56fa94946.png)
+
+For the validation set, we can see that the Transformers architectures achieved the best results in temrs of Recall and Specificity compare to LSTM and U-net architectures. 
 
 ## Results on Test databases
 In the testing set we could use the MTI-BIH database, and use information from seperate group of patients, but in order to see if our trained models can be genralize to "real-world" data, we choose to use external databases. 
@@ -82,6 +85,9 @@ Recall:
 Specificity:
 
 ![Specificity test](https://user-images.githubusercontent.com/47494709/183284389-8eb584b4-08fa-4abd-8236-4a069a968e8a.png)
+
+## Discussion
+
 
 ## Reference
 
