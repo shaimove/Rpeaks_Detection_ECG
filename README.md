@@ -21,8 +21,8 @@ The input is MIT-BIH database:
 1. MIT-BIH Arrhythmia database, includes "clean" ECG signal [2]
 2. MIT-BIH Noise Stress database, includes only ECG "noise" [3]
 
-For test set, we used new data source:
-3. 
+For test set, we used four other database and they are described in the Test Models section.
+
 
 The data creation method used for this project was the one used in Laitala et al. [1], and we used part of their function for implementation, and can be found in:
 https://github.com/jtlait/ecg2rr.
@@ -51,10 +51,24 @@ Since
 
 
 
-## Results
+## Model output example
 The following examples show the signals; in Red the original noisy ECG signal, in Blue the taget signal (GT), in purple the output probability. 
 
 ![image](https://user-images.githubusercontent.com/47494709/177945079-e2679d1d-6b59-4ad5-ae1b-d2c1001c3f16.png)
+
+## Results on Validation set
+Before creating the data loaders, we splited the patients into two differnet sets, one for training and one for validation. The following results were achieved:
+
+
+## Results on Test databases
+In the testing set we could use the MTI-BIH database, and use information from seperate group of patients, but in order to see if our trained models can be genralize to "real-world" data, we choose to use external databases. 
+
+The following databases were used for testing the trained models, no artifical noise was added to signals:
+1. MIT-BIH Normal Sinus Rhythm Database [4], will be marked as "nsrdb"
+2. MIT-BIH Supraventricular Arrhythmia Database [5], will be marked as "svdb"
+3. St Petersburg INCART 12-lead Arrhythmia Database [6], will be marked as "incartdb"
+4. European ST-T Database [7], will be marked as "edb"
+
 
 
 ## Reference
@@ -64,4 +78,12 @@ The following examples show the signals; in Red the original noisy ECG signal, i
 [2] https://physionet.org/content/mitdb/1.0.0/
 
 [3] https://physionet.org/content/nstdb/1.0.0/
+
+[4] https://www.physionet.org/content/nsrdb/1.0.0/
+
+[5] https://physionet.org/content/svdb/1.0.0/
+
+[6] https://physionet.org/content/incartdb/1.0.0/
+
+[7] https://physionet.org/content/edb/1.0.0/
 
