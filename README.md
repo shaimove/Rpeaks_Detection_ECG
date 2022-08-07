@@ -43,6 +43,11 @@ Even after peak expanding, the database is highly unbalanced (2-3% of target ten
 
 The new loss function comprises weighted BCE with weights according to the data imbalance. Since most of the tensor should be "zeros", I added a loss for all probabilities so that the expected output would be closer to zeros. This loss ensures that the average output is lower and increases the "certainty" of classification without reducing the Recall. Last, I added L1 regularization for the model's parameters.
 
+The new loss function can be written as follows:
+
+![loss function](https://user-images.githubusercontent.com/47494709/183284535-8da2ad58-06d2-4c0d-9213-48f6f2e9a504.png)
+
+
 
 ## Peak Labeling
 Since
