@@ -69,7 +69,14 @@ The following databases were used for testing the trained models, no artifical n
 3. St Petersburg INCART 12-lead Arrhythmia Database [6], will be marked as "incartdb"
 4. European ST-T Database [7], will be marked as "edb"
 
+The following results were achieved in precentage for different models and differenet databases:
+Recall:
 
+![Recall Test](https://user-images.githubusercontent.com/47494709/183284376-67af6f55-6aeb-447b-98b9-91f849a1cf36.png)
+
+Specificity:
+
+![Specificity test](https://user-images.githubusercontent.com/47494709/183284389-8eb584b4-08fa-4abd-8236-4a069a968e8a.png)
 
 ## Reference
 
