@@ -23,7 +23,6 @@ The input is MIT-BIH database:
 
 For test set, we used four other database and they are described in the Test Models section.
 
-
 The data creation method used for this project was the one used in Laitala et al. [1], and we used part of their function for implementation, and can be found in:
 https://github.com/jtlait/ecg2rr.
 
@@ -37,7 +36,6 @@ We can use a function that measures this distance, but the calculation becomes p
 
 ![image](https://user-images.githubusercontent.com/47494709/178142049-2329a558-287d-4595-8ab0-da3ded5fc859.png)
 
-
 ## Loss Function
 Even after peak expanding, the database is highly unbalanced (2-3% of target tensor is positive), so we need to adapt the loss function from regular BCE. When I tried to train the basic LSTM model with BCE, the model didn't converge; 
 
@@ -47,10 +45,11 @@ The new loss function can be written as follows:
 
 ![loss function](https://user-images.githubusercontent.com/47494709/183284535-8da2ad58-06d2-4c0d-9213-48f6f2e9a504.png)
 
-
-
 ## Peak Labeling
-Since
+In ECG signal, we have multiple peaks, most of which are "Normal" peaks. But there are also many abnormal peaks; for different Arthymes, we have peaks that look like normal peaks (in the sense of a peak in a 1D signal). In the data generation process, we regard those abnormal peaks as non-peak; they might be an indication of a disease or not, nevertheless, they exist in the ECG signal. 
+
+After evaluating all models on the validation set, we changed the label of a few abnormal peaks to normal peaks, so the algorithm could train to detect them, and we got improved results. We changed the following peak types to "normal" peak. 
+
 
 ![image](https://user-images.githubusercontent.com/47494709/178142739-8b98f5d8-9b71-45d7-bf68-a5cc8117d7c9.png)
 
@@ -64,12 +63,12 @@ The following examples show the signals; in Red the original noisy ECG signal, i
 ## Results on Validation set
 Before creating the data loaders, we splited the patients into two differnet sets, one for training and one for validation. The following results were achieved:
 
-![validation](https://user-images.githubusercontent.com/47494709/183287686-27d9c634-7883-42a7-816d-e631f135ba4c.png =250x250)
+![validation](https://user-images.githubusercontent.com/47494709/183287686-27d9c634-7883-42a7-816d-e631f135ba4c.png)
 
-For the validation set, we can see that the Transformers architectures achieved the best results in temrs of Recall and Specificity compare to LSTM and U-net architectures. 
+For the validation set, we can see that the Transformers architectures achieved the best results in terms of Recall and Specificity compared to LSTM and U-net architectures. Res-Inception blocks improved the performance for all architectures and changing the labeling of the peaks enhanced the performance.  
 
 ## Results on Test databases
-In the testing set we could use the MTI-BIH database, and use information from seperate group of patients, but in order to see if our trained models can be genralize to "real-world" data, we choose to use external databases. 
+In the testing set, we could use the MTI-BIH database and use information from a separate group of patients, but in order to test if our trained models can be generalized to "real-world" data, we choose to use external databases. The database contains a variety of different types of ECG signals: normal sinus rhythm (nsrdb), arrhythmia (svdb & incartdb), ST and T morphology changes (edb), and long-term measurements (nsrdb).
 
 The following databases were used for testing the trained models, no artifical noise was added to signals:
 1. MIT-BIH Normal Sinus Rhythm Database [4], will be marked as "nsrdb"
@@ -77,7 +76,8 @@ The following databases were used for testing the trained models, no artifical n
 3. St Petersburg INCART 12-lead Arrhythmia Database [6], will be marked as "incartdb"
 4. European ST-T Database [7], will be marked as "edb"
 
-The following results were achieved in precentage for different models and differenet databases:
+The following results were achieved in percentage for different models and different databases:
+
 Recall:
 
 ![Recall Test](https://user-images.githubusercontent.com/47494709/183284376-67af6f55-6aeb-447b-98b9-91f849a1cf36.png)
