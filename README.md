@@ -64,7 +64,7 @@ The following examples show the signals; in Red the original noisy ECG signal, i
 ## Results on Validation set
 Before creating the data loaders, we splited the patients into two differnet sets, one for training and one for validation. The following results were achieved:
 
-![validation](https://user-images.githubusercontent.com/47494709/183284617-1a245677-a1ee-4196-ade5-9ba56fa94946.png)
+![validation](https://user-images.githubusercontent.com/47494709/183287686-27d9c634-7883-42a7-816d-e631f135ba4c.png)
 
 For the validation set, we can see that the Transformers architectures achieved the best results in temrs of Recall and Specificity compare to LSTM and U-net architectures. 
 
