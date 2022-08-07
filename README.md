@@ -2,6 +2,13 @@
 
 The following Repo is part of a project in a course in the Biomedical engineering faculty at the Technion, Machine Learning for Physiological Time Series Analysis (336018).
 
+ECG is the measurement of your heart's electrical activity, enabling physicians to detect many diseases related to the heart's electrical function. Several electrodes are positioned on the patient's chest in different locations, and we measure the voltage difference between different electrodes. 
+Usually, when we perform the test in a hospital or other medical facility, we do it with multiple sensors, position the electrode accurately on the body. At the end of measurements in a medical facility, we get a very "clean" signal, almost free of noise, and in the past; Many classical algorithms for R peaks detection were developed and worked well for clean ECG signals. 
+
+The problem is that we want to perform the test without scheduling an appointment in a medical facility, and to measure the ECG signal easily at home, even on a wearable device. It will reduce costs and enable us to detect cardiac problems long before it becomes severe at home at a low cost.
+The problem with wearable devices is the level of noise. There are many noise sources such as motions of the patient, changes in conduction, dry electrodes, electrical noise from the battery or line, etc. 
+We need a robust algorithm to detect R-peaks on edge devices to overcome high levels and sources of noise. 
+
 The project's goal is to detect R-peaks in noisy ECG signals; The frame for data generation is based on Laitala et al. l [1]. In this project, we compared different architectures of RNN and compared them in terms of Recall and Specificity. In this project, we also introduced a new loss function and changed the R-peak labeling convention to improve results. 
 
 The model's input and output is a 1D tensor with a length of 1000, and continuous values for input (noisy ECG). The target vector is a probability tensor, threshold to boolean tensor (1 for peaks, 0 for background).
@@ -46,17 +53,15 @@ The new loss function can be written as follows:
 ![loss function](https://user-images.githubusercontent.com/47494709/183284535-8da2ad58-06d2-4c0d-9213-48f6f2e9a504.png)
 
 ## Peak Labeling
-In ECG signal, we have multiple peaks, most of which are "Normal" peaks. But there are also many abnormal peaks; for different Arthymes, we have peaks that look like normal peaks (in the sense of a peak in a 1D signal). In the data generation process, we regard those abnormal peaks as non-peak; they might be an indication of a disease or not, nevertheless, they exist in the ECG signal. 
+In ECG signal, we have multiple peaks, most of which are "Normal" peaks. But there are also many abnormal peaks; for different Arthymes, we have peaks that look like normal peaks (in the sense of a peak in a 1D signal). In the data generation process, we exlude signals with abnormal peaks; they might be an indication of a disease or not, nevertheless, they exist in the ECG signal. 
 
-After evaluating all models on the validation set, we changed the label of a few abnormal peaks to normal peaks, so the algorithm could train to detect them, and we got improved results. We changed the following peak types to "normal" peak. 
-
+After evaluating all models on the validation set, we changed the labeling of a few abnormal peaks to normal peaks, so the algorithm could train to detect them, and we got improved results. We changed the following peak types to "normal" peak. 
 
 ![image](https://user-images.githubusercontent.com/47494709/178142739-8b98f5d8-9b71-45d7-bf68-a5cc8117d7c9.png)
 
 
-
 ## Model output example
-The following examples show the signals; in Red the original noisy ECG signal, in Blue the taget signal (GT), in purple the output probability. 
+The following examples shows the signals; in Red the original noisy ECG signal, in Blue the taget signal (GT), in purple the output probability. 
 
 ![image](https://user-images.githubusercontent.com/47494709/177945079-e2679d1d-6b59-4ad5-ae1b-d2c1001c3f16.png)
 
@@ -65,7 +70,7 @@ Before creating the data loaders, we splited the patients into two differnet set
 
 ![validation](https://user-images.githubusercontent.com/47494709/183287686-27d9c634-7883-42a7-816d-e631f135ba4c.png)
 
-For the validation set, we can see that the Transformers architectures achieved the best results in terms of Recall and Specificity compared to LSTM and U-net architectures. Res-Inception blocks improved the performance for all architectures and changing the labeling of the peaks enhanced the performance. In addition, all deep-learning methods are superior to the classical algorithm (G-QRS implemented in the wfdb library). 
+For the validation set, we can see that the Transformers architectures achieved the best results in terms of Recall and Specificity compared to LSTM and U-net architectures. Res-Inception blocks improved the performance for all architectures, and changing the labeling of the peaks enhanced the performance. In addition, all deep-learning methods are superior to the classical algorithm (G-QRS algorithm is implemented in the wfdb library). 
 
 ## Results on Test databases
 In the testing set, we could use the MTI-BIH database and use information from a separate group of patients, but in order to test if our trained models can be generalized to "real-world" data, we choose to use external databases. The database contains a variety of different types of ECG signals: normal sinus rhythm (nsrdb), arrhythmia (svdb & incartdb), ST and T morphology changes (edb), and long-term measurements (nsrdb).
@@ -86,9 +91,23 @@ Specificity:
 
 ![Specificity test](https://user-images.githubusercontent.com/47494709/183290120-24757cd1-60f5-4c83-b2dd-037d84a23f8f.png)
 
+Next, we wanted to see if adding abnormal peaks could improve the results, only for the last architecture: Encoding transformers, with Res-Inception block as feature extraction stage. We labeled "Normal" peaks as peaks in all test databases, disregarding all other peaks. The table below shows that the inclusion of abnormal peaks didn't improve the results. 
+
+![label correction](https://user-images.githubusercontent.com/47494709/183293856-a2bfa8c4-4b8f-4199-8841-0ba4a6fd7381.png)
+
 ## Discussion
 
-In the test sets, we can see that the deep-learning methods outperform the classical methods (GQRS) methods. 
+The project's goal was mainly to test whether transformers architectures, a more recent architecture that showed improved results in computer vision and NLP, can also benefit R-peaks in 1D ECG signal. During training and validation, we saw that transformers architectures achieved higher results compared to LSTMs and U-net architectures. 
+
+The results decreased significantly when we evaluated the models on other databases without adding noise. This decrease can be explained by the "unnatural" nature of the noise we added. Muscle Artifacts and Base Wander amplitudes can be correlated to a "clean" ECG signal, so the noise-adding process wasn't correct. The models were trained with high levels of noise, which may not represent the noise level of a real ECG signal. Another reason could be that MIT-BIH doesn't contain a variety of ECG signals, for example, different arrhythmias and quality of ECG signal. 
+
+Nevertheless, in both validation and test databases, all deep-learning approaches outperform the classical method that was used (GQRS algorithm). Future work should be done to improve R-peaks detection using deep-learning models.
+
+Sevral improvements can be done:
+1. Use "real" noisy ECG signal instead synthetic noise. 
+2. Use multiple databases in the training and validation process. 
+3. Improve peaks labeling methods
+4. Use longer length for detection (we used fs=250Hz, 1000 length vector, only 4 seconds)
 
 ## Reference
 
